@@ -13,6 +13,18 @@ import * as Contracts from ".";
 declare module "hardhat/types/runtime" {
   interface HardhatEthersHelpers extends HardhatEthersHelpersBase {
     getContractFactory(
+      name: "IERC20",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IERC20__factory>;
+    getContractFactory(
+      name: "EnzymeVaultManager",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.EnzymeVaultManager__factory>;
+    getContractFactory(
+      name: "IComptroller",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IComptroller__factory>;
+    getContractFactory(
       name: "Multicall",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Multicall__factory>;
@@ -20,6 +32,32 @@ declare module "hardhat/types/runtime" {
       name: "YourContract",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.YourContract__factory>;
+
+    getContractAt(
+      name: "IERC20",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC20>;
+    getContractAt(
+      name: "EnzymeVaultManager",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.EnzymeVaultManager>;
+    getContractAt(
+      name: "IComptroller",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IComptroller>;
+    getContractAt(
+      name: "Multicall",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Multicall>;
+    getContractAt(
+      name: "YourContract",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.YourContract>;
 
     // default types
     getContractFactory(
@@ -31,5 +69,10 @@ declare module "hardhat/types/runtime" {
       bytecode: ethers.utils.BytesLike,
       signer?: ethers.Signer
     ): Promise<ethers.ContractFactory>;
+    getContractAt(
+      nameOrAbi: string | any[],
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<ethers.Contract>;
   }
 }

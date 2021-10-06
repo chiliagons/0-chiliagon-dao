@@ -25,6 +25,7 @@
     "typescript": "^4.3.2"
   },
   "dependencies": {
+    "@openzeppelin/contracts": "^4.3.2",
     "@superfluid-finance/js-sdk": "^0.5.4"
   }
 }
