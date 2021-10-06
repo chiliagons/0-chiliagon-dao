@@ -26,7 +26,7 @@ async function main() {
   await enzymeVaultManager.deployed();
   // saveFrontendFiles(contract, "YourContract");
   console.log('YourContract deployed to:', enzymeVaultManager.address);
-
+  
 }
 
 // https://github.com/nomiclabs/hardhat-hackathon-boilerplate/blob/master/scripts/deploy.js
