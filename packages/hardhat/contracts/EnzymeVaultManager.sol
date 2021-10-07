@@ -2,6 +2,7 @@
 pragma solidity ^0.8.3;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "hardhat/console.sol";
 
@@ -50,16 +51,19 @@ contract EnzymeVaultManager {
     /***
     *dev for now we only allow WETH deposits */
     function depositFunds(uint256 amountToDeposit) public returns(bool){
-      require(weth.allowance(msg.sender,address(this)) >= amountToDeposit);
-      weth.safeTransferFrom(msg.sender, address(this), amountToDeposit);
+      require(weth.allowance(msg.sender,address(this)) >= amountToDeposit, "Not enough allowance");
+      console.log("Allowance check done");
+      weth.transferFrom(msg.sender, address(this), amountToDeposit);
+      console.log("Transfer check done");
       
-      address[] memory buyers;
-      uint256[] memory amountToBuy ;
-      uint256[] memory minAmountToBuy;
+      address[] memory buyers = new address[](1);
+      uint256[] memory amountToBuy = new uint256[](1);
+      uint256[] memory minAmountToBuy = new uint256[](1);
   
       buyers[0]=address(this);
       amountToBuy[0]=amountToDeposit;
       minAmountToBuy[0]=amountToDeposit-10000000;
+
       enzymeVault.buyShares(buyers, amountToBuy, minAmountToBuy);
       return true;
     }

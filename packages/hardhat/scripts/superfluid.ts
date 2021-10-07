@@ -20,23 +20,23 @@ const sf = new SuperfluidSDK.Framework({
 
 async function testm(){
   await sf.initialize();
-  const dias = sf.user({
+  const example = sf.user({
     address: walletWithProvider.address,
     token: '0xF2d68898557cCb2Cf4C10c3Ef2B034b2a69DAD00'
 });
-const details = await dias.details();
-console.log("Dias's - ",details);
+const details = await example.details();
+console.log("example's - ",details);
 
 
 //This is the IDA portion
-await dias.createPool({ poolId: 1 });
-await dias.giveShares({ poolId: 1, recipient: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266', shares: 90 });
-await dias.giveShares({ poolId: 1, recipient: '0xb57706887B3C29337BfA121D36b6987Eb5dce79f', shares: 10 });
+await example.createPool({ poolId: 1 });
+await example.giveShares({ poolId: 1, recipient: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266', shares: 90 });
+await example.giveShares({ poolId: 1, recipient: '0xb57706887B3C29337BfA121D36b6987Eb5dce79f', shares: 10 });
 
-await dias.distributeToPool({ poolId: 1, amount: 1000 });
+await example.distributeToPool({ poolId: 1, amount: 1000 });
 
-const detailsPostAction = await dias.details();
-console.log("Dias's - ",detailsPostAction);
+const detailsPostAction = await example.details();
+console.log("example's - ",detailsPostAction);
 }
 
 
