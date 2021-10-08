@@ -17,8 +17,8 @@ const accounts = {
 
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
-task("accounts", "Prints the list of accounts", async (args, { ethers }) => {
-  const accounts = await ethers.getSigners();
+task("accounts", "Prints the list of accounts", async (_args, hre) => {
+  const accounts = await hre.ethers.getSigners();
 
   for (const account of accounts) {
     console.log(await account.address);
@@ -28,19 +28,10 @@ task("accounts", "Prints the list of accounts", async (args, { ethers }) => {
 /**
  * @type import('hardhat/config').HardhatUserConfig
  */
- const config: HardhatUserConfig =  {
-  defaultNetwork: "hardhat",
-  solidity: {compilers: [
-    {
-      version: "0.5.16",
-    },
-    {
-      version: "0.8.6",
-      settings: {},
-    },
-  ]},
+const config: HardhatUserConfig = {
+  solidity: "0.8.3",
   paths: {
-    artifacts: '../frontend/artifacts',
+    artifacts: "../frontend/artifacts",
   },
   networks: {
     localhost: {
@@ -56,15 +47,15 @@ task("accounts", "Prints the list of accounts", async (args, { ethers }) => {
       forking: {
         enabled: true,
         url: `https://eth-kovan.alchemyapi.io/v2/HI8npM_DUD5_7FM24hWts9cN_73kDRg3`,
-        blockNumber: 27535853
-      }
+        blockNumber: 27534667,
+      },
     },
     rinkeby: {
       url: "https://eth-rinkeby.alchemyapi.io/v2/${process.env.INFURA_API_KEY}", 
       accounts,
     },
     kovan: {
-      url: "https://eth-kovan.alchemyapi.io/v2/HI8npM_DUD5_7FM24hWts9cN_73kDRg3", 
+      url: "https://eth-kovan.alchemyapi.io/v2/HI8npM_DUD5_7FM24hWts9cN_73kDRg3",
       accounts,
     },
     mainnet: {
@@ -96,17 +87,14 @@ task("accounts", "Prints the list of accounts", async (args, { ethers }) => {
         bre.network.name !== "hardhat" && bre.network.name !== "localhost"
     ),
   },
-  etherscan: {
-    // Your API key for Etherscan
-    // Obtain one at https://etherscan.io/
-    apiKey: process.env.ETHERSCAN_KEY
-  },
+  // etherscan: {
+  //   // Your API key for Etherscan
+  //   // Obtain one at https://etherscan.io/
+  //   apiKey: process.env.ETHERSCAN_KEY
+  // },
   typechain: {
-    outDir: 'src/types',
-    target: 'ethers-v5',
-    alwaysGenerateOverloads: false, // should overloads with full signatures like deposit(uint256) be generated always, even if there are no overloads?
-    externalArtifacts: ['externalArtifacts/*.json'], // optional array of glob patterns with external artifacts to process (for example external libs from node_modules)
-  }
+    outDir: "../frontend/types/typechain",
+  },
 };
 
 export default config;
