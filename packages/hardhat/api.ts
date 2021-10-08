@@ -14,7 +14,7 @@ async function fetchactiveProposals() {
     skip: 0,
     where: {
       space_in: ["chiliagon.eth"],
-      state: "active"
+      state: "closed"
     },
     orderBy: "created",
     orderDirection: desc

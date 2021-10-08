@@ -28,27 +28,19 @@ async function testm() {
   const details = await project.details();
   console.log("Project's - ", details);
 
-  //Graphql queries and calls
 
   //This is the IDA portion
-
-  let x = 0;
   let recipientaddresses = activeProposals["body"]["address"];
   let recipientshares = activeProposals["body"]["percentages"];
 
   await project.createPool({ poolId: 1 });
+  for (let x = 0; x < recipientaddresses.length; x++){
   await project.giveShares({
     poolId: 1,
     recipient: recipientaddresses[x],
     shares: recipientshares[x],
   });
-  x++;
-  await project.giveShares({
-    poolId: 1,
-    recipient: recipientaddresses[x],
-    shares: recipientshares[x],
-  });
-
+  }
   await project.distributeToPool({ poolId: 1, amount: 1000 });
 
   const detailsPostAction = await project.details();
