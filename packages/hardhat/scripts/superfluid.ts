@@ -20,23 +20,75 @@ const sf = new SuperfluidSDK.Framework({
 
 async function testm(){
   await sf.initialize();
-  const dias = sf.user({
+  const project = sf.user({
     address: walletWithProvider.address,
     token: '0xF2d68898557cCb2Cf4C10c3Ef2B034b2a69DAD00'
 });
-const details = await dias.details();
-console.log("Dias's - ",details);
+const details = await project.details();
+console.log("Project's - ",details);
+
+//Graphql queries and calls
+  
+const fetch = require("node-fetch");
+const GRAPHQL_URL = "https://hub.snapshot.org/graphql";
+async function fetchProposalData() {
+  const response = await fetch(GRAPHQL_URL, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      query: 
+      query {
+        proposal(id:"QmWbpCtwdLzxuLKnMW4Vv4MPFd2pdPX71YBKPasfZxqLUS") {
+          id
+          title
+          body
+          choices
+          start
+          end
+          snapshot
+          state
+          author
+          created
+          plugins
+          network
+          strategies {
+            name
+            params
+          }
+          space {
+            id
+            name
+          }
+        }
+      }
+      ,
+    }),
+  });
+
+  const responseBody = await response.json();
+  console.log(responseBody);
+  let addressdata = responseBody["data"]["body"];
+  return addressdata;
+}
 
 
 //This is the IDA portion
-await dias.createPool({ poolId: 1 });
-await dias.giveShares({ poolId: 1, recipient: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266', shares: 90 });
-await dias.giveShares({ poolId: 1, recipient: '0xb57706887B3C29337BfA121D36b6987Eb5dce79f', shares: 10 });
 
-await dias.distributeToPool({ poolId: 1, amount: 1000 });
+let x=0;
+let recipientaddresses[]=fetchProposalData()["body"]["address"];
+let recipientshares[]=fetchProposalData()["body"]["percentages"];
 
-const detailsPostAction = await dias.details();
-console.log("Dias's - ",detailsPostAction);
+await project.createPool({ poolId: 1 });
+await project.giveShares({ poolId: 1, recipient: recipientaddresses[x], shares: recipientshares[x] });
+x++;
+await project.giveShares({ poolId: 1, recipient: recipientadresses[x], shares: recipientshares[x] });
+
+await project.distributeToPool({ poolId: 1, amount: 1000 });
+
+const detailsPostAction = await project.details();
+console.log("Project's - ",detailsPostAction);
 }
 
 
