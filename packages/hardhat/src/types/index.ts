@@ -6,6 +6,7 @@ export type { IERC20Metadata } from "./IERC20Metadata";
 export type { IERC20 } from "./IERC20";
 export type { EnzymeVaultManager } from "./EnzymeVaultManager";
 export type { IComptroller } from "./IComptroller";
+export type { MTK } from "./MTK";
 export type { Multicall } from "./Multicall";
 
 export { ERC20__factory } from "./factories/ERC20__factory";
@@ -13,4 +14,5 @@ export { IERC20Metadata__factory } from "./factories/IERC20Metadata__factory";
 export { IERC20__factory } from "./factories/IERC20__factory";
 export { EnzymeVaultManager__factory } from "./factories/EnzymeVaultManager__factory";
 export { IComptroller__factory } from "./factories/IComptroller__factory";
+export { MTK__factory } from "./factories/MTK__factory";
 export { Multicall__factory } from "./factories/Multicall__factory";

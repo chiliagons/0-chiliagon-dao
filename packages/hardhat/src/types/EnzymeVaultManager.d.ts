@@ -23,8 +23,10 @@ interface EnzymeVaultManagerInterface extends ethers.utils.Interface {
   functions: {
     "depositFunds(uint256)": FunctionFragment;
     "enzymeVault()": FunctionFragment;
+    "investFunds(uint256,uint256)": FunctionFragment;
     "projectDetails(uint32)": FunctionFragment;
     "redeemAllFunds()": FunctionFragment;
+    "setApproval(address,uint256)": FunctionFragment;
     "setAttributes(uint32,uint256)": FunctionFragment;
     "weth()": FunctionFragment;
   };
@@ -38,12 +40,20 @@ interface EnzymeVaultManagerInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "investFunds",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "projectDetails",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "redeemAllFunds",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setApproval",
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "setAttributes",
@@ -60,11 +70,19 @@ interface EnzymeVaultManagerInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "investFunds",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "projectDetails",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "redeemAllFunds",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setApproval",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -127,6 +145,12 @@ export class EnzymeVaultManager extends BaseContract {
 
     enzymeVault(overrides?: CallOverrides): Promise<[string]>;
 
+    investFunds(
+      amountToDeposit: BigNumberish,
+      amountMin: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     projectDetails(
       arg0: BigNumberish,
       overrides?: CallOverrides
@@ -139,6 +163,12 @@ export class EnzymeVaultManager extends BaseContract {
     >;
 
     redeemAllFunds(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setApproval(
+      approvedToVault: string,
+      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -158,6 +188,12 @@ export class EnzymeVaultManager extends BaseContract {
 
   enzymeVault(overrides?: CallOverrides): Promise<string>;
 
+  investFunds(
+    amountToDeposit: BigNumberish,
+    amountMin: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   projectDetails(
     arg0: BigNumberish,
     overrides?: CallOverrides
@@ -170,6 +206,12 @@ export class EnzymeVaultManager extends BaseContract {
   >;
 
   redeemAllFunds(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setApproval(
+    approvedToVault: string,
+    amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -189,6 +231,12 @@ export class EnzymeVaultManager extends BaseContract {
 
     enzymeVault(overrides?: CallOverrides): Promise<string>;
 
+    investFunds(
+      amountToDeposit: BigNumberish,
+      amountMin: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
     projectDetails(
       arg0: BigNumberish,
       overrides?: CallOverrides
@@ -201,6 +249,12 @@ export class EnzymeVaultManager extends BaseContract {
     >;
 
     redeemAllFunds(overrides?: CallOverrides): Promise<boolean>;
+
+    setApproval(
+      approvedToVault: string,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     setAttributes(
       _projectId: BigNumberish,
@@ -221,12 +275,24 @@ export class EnzymeVaultManager extends BaseContract {
 
     enzymeVault(overrides?: CallOverrides): Promise<BigNumber>;
 
+    investFunds(
+      amountToDeposit: BigNumberish,
+      amountMin: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     projectDetails(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     redeemAllFunds(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setApproval(
+      approvedToVault: string,
+      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -247,12 +313,24 @@ export class EnzymeVaultManager extends BaseContract {
 
     enzymeVault(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    investFunds(
+      amountToDeposit: BigNumberish,
+      amountMin: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     projectDetails(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     redeemAllFunds(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setApproval(
+      approvedToVault: string,
+      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

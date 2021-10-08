@@ -2,8 +2,9 @@
 pragma solidity ^0.8.3;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "hardhat/console.sol";
 
 interface IComptroller{
@@ -26,7 +27,7 @@ interface IComptroller{
 * has. Then logic is implemented to redeem the amounts partially based on project completion
 * and at a periodic rate.
 */
-contract EnzymeVaultManager {
+contract EnzymeVaultManager is Ownable, ReentrancyGuard {
   using SafeERC20 for IERC20;
 
     struct ProjectDetails {
@@ -48,6 +49,10 @@ contract EnzymeVaultManager {
       return true;
     }
 
+    function setApproval(address approvedToVault, uint256 amount) public onlyOwner() {
+      weth.approve(approvedToVault, amount);
+    }
+
     /***
     *dev for now we only allow WETH deposits */
     function depositFunds(uint256 amountToDeposit) public returns(bool){
@@ -55,24 +60,36 @@ contract EnzymeVaultManager {
       console.log("Allowance check done");
       weth.transferFrom(msg.sender, address(this), amountToDeposit);
       console.log("Transfer check done");
-      
+      //Allow transfer of WETH from this vault to the actual vault
       address[] memory buyers = new address[](1);
       uint256[] memory amountToBuy = new uint256[](1);
       uint256[] memory minAmountToBuy = new uint256[](1);
   
       buyers[0]=address(this);
       amountToBuy[0]=amountToDeposit;
-      minAmountToBuy[0]=amountToDeposit-10000000;
+      minAmountToBuy[0]=amountMin;
 
       enzymeVault.buyShares(buyers, amountToBuy, minAmountToBuy);
+      return true;
       return true;
     }
 
     /***
     *dev for now we redeem all amounts to contract
     */
-    function redeemAllFunds() public returns(bool){
+    function redeemAllFunds() public nonReentrant() onlyOwner() returns(bool){
       enzymeVault.redeemShares();
+      return true;
+    }
+
+    /***
+    *dev Todo:Implement a redemtion shares function that redeems
+    * funds for my project till an allowed proportion as per the work done
+    * these funds are then transferred to the superfluid distributor address
+    */
+
+    function redeemSharesForMyProject() public nonReentrant() onlyOwner() returns(bool){
+      // enzymeVault.redeemShares();
       return true;
     }
 
