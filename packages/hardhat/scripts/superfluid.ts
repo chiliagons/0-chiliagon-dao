@@ -1,25 +1,48 @@
 import SuperfluidSDK from "@superfluid-finance/js-sdk";
 import { Web3Provider, InfuraProvider } from "@ethersproject/providers";
 import { ethers } from "ethers";
-import fetchactiveProposals from "../api";
-let privateKey = "";
-let wallet = new ethers.Wallet(privateKey);
-let activeProposals = await fetchactiveProposals;
-console.log(activeProposals);
-// Connect a wallet to mainnet
+import fetchActiveProposals from "../api";
+let privateKey = "b382bd608d9d07f17dbbea942c8657fd346e8f3cc0dbb9993a6461e96c44fd67";
+
 let provider = new InfuraProvider("goerli", {
-  projectId: "9f3370d63f484b24a73fc28c6b487ee4",
-  projectSecret: "842ae53c537e44d8bc22769c41d3cbd7",
+  projectId: "9f3370d63f484b24a73fc28c6b487ee4"
 });
 
+
+function delay(ms:any) { 
+  return new Promise( resolve => setTimeout(resolve, ms) );
+}
+
+let web3walletSigner = new Web3Provider((provider as any));
+
 let walletWithProvider = new ethers.Wallet(privateKey, provider);
-const walletSigner = walletWithProvider.connect(provider);
+let walletSigner = walletWithProvider.connect(provider);
+// let web3walletSigner = new Web3Provider((provider as any));
 
 const sf = new SuperfluidSDK.Framework({
   ethers: walletSigner,
 });
 
-async function testm() {
+let initProposals = [];
+
+async function init() {
+  let initProposals = await fetchActiveProposals;
+  console.log(initProposals);
+}  
+
+async function loopFn() {
+    let activeProposals = await fetchActiveProposals;
+    console.log(initProposals.length, activeProposals.length);
+
+    if(initProposals.length < activeProposals.length){
+      console.log("New active Proposal detected", activeProposals[0], activeProposals.length);
+      testm(activeProposals[0], activeProposals.length);
+      initProposals = activeProposals;
+    }
+}
+
+
+async function testm(activeProposal:any, proposalId:number) {
   await sf.initialize();
   const project = sf.user({
     address: walletWithProvider.address,
@@ -28,15 +51,17 @@ async function testm() {
   const details = await project.details();
   console.log("Project's - ", details);
 
-
   //This is the IDA portion
-  let recipientaddresses = activeProposals["body"]["address"];
-  let recipientshares = activeProposals["body"]["percentages"];
-
-  await project.createPool({ poolId: 1 });
+  try{
+  let currentProposal = JSON.parse(activeProposal["body"]);
+  console.log(currentProposal);
+  let recipientaddresses = currentProposal["address"];
+  let recipientshares = currentProposal["shares"];
+  
+  await project.createPool({ poolId: proposalId });
   for (let x = 0; x < recipientaddresses.length; x++){
   await project.giveShares({
-    poolId: 1,
+    poolId: proposalId,
     recipient: recipientaddresses[x],
     shares: recipientshares[x],
   });
@@ -46,5 +71,9 @@ async function testm() {
   const detailsPostAction = await project.details();
   console.log("Project's - ", detailsPostAction);
 }
-
-testm();
+catch(e){
+  console.log(e)
+}
+}
+init();
+setInterval(loopFn,60000);

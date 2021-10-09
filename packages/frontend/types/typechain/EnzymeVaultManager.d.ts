@@ -21,22 +21,28 @@ import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
 interface EnzymeVaultManagerInterface extends ethers.utils.Interface {
   functions: {
-    "depositFunds(uint256)": FunctionFragment;
+    "depositFunds(uint256,uint256)": FunctionFragment;
     "enzymeVault()": FunctionFragment;
+    "owner()": FunctionFragment;
     "projectDetails(uint32)": FunctionFragment;
     "redeemAllFunds()": FunctionFragment;
+    "redeemSharesForMyProject()": FunctionFragment;
+    "renounceOwnership()": FunctionFragment;
+    "setApproval(address,uint256)": FunctionFragment;
     "setAttributes(uint32,uint256)": FunctionFragment;
+    "transferOwnership(address)": FunctionFragment;
     "weth()": FunctionFragment;
   };
 
   encodeFunctionData(
     functionFragment: "depositFunds",
-    values: [BigNumberish]
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "enzymeVault",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "projectDetails",
     values: [BigNumberish]
@@ -46,8 +52,24 @@ interface EnzymeVaultManagerInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "redeemSharesForMyProject",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "renounceOwnership",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setApproval",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "setAttributes",
     values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "transferOwnership",
+    values: [string]
   ): string;
   encodeFunctionData(functionFragment: "weth", values?: undefined): string;
 
@@ -59,6 +81,7 @@ interface EnzymeVaultManagerInterface extends ethers.utils.Interface {
     functionFragment: "enzymeVault",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "projectDetails",
     data: BytesLike
@@ -68,13 +91,37 @@ interface EnzymeVaultManagerInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "redeemSharesForMyProject",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "renounceOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setApproval",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "setAttributes",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "weth", data: BytesLike): Result;
 
-  events: {};
+  events: {
+    "OwnershipTransferred(address,address)": EventFragment;
+  };
+
+  getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
 }
+
+export type OwnershipTransferredEvent = TypedEvent<
+  [string, string] & { previousOwner: string; newOwner: string }
+>;
 
 export class EnzymeVaultManager extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -122,10 +169,13 @@ export class EnzymeVaultManager extends BaseContract {
   functions: {
     depositFunds(
       amountToDeposit: BigNumberish,
+      amountMin: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     enzymeVault(overrides?: CallOverrides): Promise<[string]>;
+
+    owner(overrides?: CallOverrides): Promise<[string]>;
 
     projectDetails(
       arg0: BigNumberish,
@@ -142,9 +192,28 @@ export class EnzymeVaultManager extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    redeemSharesForMyProject(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setApproval(
+      approvedToVault: string,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     setAttributes(
       _projectId: BigNumberish,
       _deadline: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    transferOwnership(
+      newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -153,10 +222,13 @@ export class EnzymeVaultManager extends BaseContract {
 
   depositFunds(
     amountToDeposit: BigNumberish,
+    amountMin: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   enzymeVault(overrides?: CallOverrides): Promise<string>;
+
+  owner(overrides?: CallOverrides): Promise<string>;
 
   projectDetails(
     arg0: BigNumberish,
@@ -173,9 +245,28 @@ export class EnzymeVaultManager extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  redeemSharesForMyProject(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  renounceOwnership(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setApproval(
+    approvedToVault: string,
+    amount: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   setAttributes(
     _projectId: BigNumberish,
     _deadline: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  transferOwnership(
+    newOwner: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -184,10 +275,13 @@ export class EnzymeVaultManager extends BaseContract {
   callStatic: {
     depositFunds(
       amountToDeposit: BigNumberish,
+      amountMin: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
     enzymeVault(overrides?: CallOverrides): Promise<string>;
+
+    owner(overrides?: CallOverrides): Promise<string>;
 
     projectDetails(
       arg0: BigNumberish,
@@ -202,24 +296,58 @@ export class EnzymeVaultManager extends BaseContract {
 
     redeemAllFunds(overrides?: CallOverrides): Promise<boolean>;
 
+    redeemSharesForMyProject(overrides?: CallOverrides): Promise<boolean>;
+
+    renounceOwnership(overrides?: CallOverrides): Promise<void>;
+
+    setApproval(
+      approvedToVault: string,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     setAttributes(
       _projectId: BigNumberish,
       _deadline: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    transferOwnership(
+      newOwner: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     weth(overrides?: CallOverrides): Promise<string>;
   };
 
-  filters: {};
+  filters: {
+    "OwnershipTransferred(address,address)"(
+      previousOwner?: string | null,
+      newOwner?: string | null
+    ): TypedEventFilter<
+      [string, string],
+      { previousOwner: string; newOwner: string }
+    >;
+
+    OwnershipTransferred(
+      previousOwner?: string | null,
+      newOwner?: string | null
+    ): TypedEventFilter<
+      [string, string],
+      { previousOwner: string; newOwner: string }
+    >;
+  };
 
   estimateGas: {
     depositFunds(
       amountToDeposit: BigNumberish,
+      amountMin: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     enzymeVault(overrides?: CallOverrides): Promise<BigNumber>;
+
+    owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     projectDetails(
       arg0: BigNumberish,
@@ -230,9 +358,28 @@ export class EnzymeVaultManager extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    redeemSharesForMyProject(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setApproval(
+      approvedToVault: string,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     setAttributes(
       _projectId: BigNumberish,
       _deadline: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    transferOwnership(
+      newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -242,10 +389,13 @@ export class EnzymeVaultManager extends BaseContract {
   populateTransaction: {
     depositFunds(
       amountToDeposit: BigNumberish,
+      amountMin: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     enzymeVault(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     projectDetails(
       arg0: BigNumberish,
@@ -256,9 +406,28 @@ export class EnzymeVaultManager extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    redeemSharesForMyProject(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setApproval(
+      approvedToVault: string,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     setAttributes(
       _projectId: BigNumberish,
       _deadline: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    transferOwnership(
+      newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

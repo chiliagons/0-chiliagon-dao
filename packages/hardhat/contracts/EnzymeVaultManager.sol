@@ -55,7 +55,7 @@ contract EnzymeVaultManager is Ownable, ReentrancyGuard {
 
     /***
     *dev for now we only allow WETH deposits */
-    function depositFunds(uint256 amountToDeposit) public returns(bool){
+    function depositFunds(uint256 amountToDeposit, uint256 amountMin) public returns(bool){
       require(weth.allowance(msg.sender,address(this)) >= amountToDeposit, "Not enough allowance");
       console.log("Allowance check done");
       weth.transferFrom(msg.sender, address(this), amountToDeposit);

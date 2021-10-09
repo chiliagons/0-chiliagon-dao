@@ -1,6 +1,6 @@
 import fetch from "node-fetch";
 const GRAPHQL_URL = "https://hub.snapshot.org/graphql";
-async function fetchactiveProposals() {
+async function fetchActiveProposals() {
   const response = await fetch(GRAPHQL_URL, {
     method: "POST",
     headers: {
@@ -14,7 +14,7 @@ async function fetchactiveProposals() {
     skip: 0,
     where: {
       space_in: ["chiliagon.eth"],
-      state: "closed"
+      state: "active"
     },
     orderBy: "created",
     orderDirection: desc
@@ -39,8 +39,7 @@ async function fetchactiveProposals() {
   });
 
   const responseBody = await response.json();
-  console.log(responseBody);
   let data = responseBody["data"]["proposals"];
   return data;
 }
-export default fetchactiveProposals();
+export default fetchActiveProposals();
