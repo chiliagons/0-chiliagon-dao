@@ -1,6 +1,8 @@
 import fetch from "node-fetch";
 const GRAPHQL_URL = "https://hub.snapshot.org/graphql";
+export default 
 async function fetchActiveProposals() {
+  console.log("CALLED FETCH")
   const response = await fetch(GRAPHQL_URL, {
     method: "POST",
     headers: {
@@ -40,6 +42,9 @@ async function fetchActiveProposals() {
 
   const responseBody = await response.json();
   let data = responseBody["data"]["proposals"];
+  console.log("fetch function called", data);
+  console.log("fetch function finsihed");
+
   return data;
 }
-export default fetchActiveProposals();
+
