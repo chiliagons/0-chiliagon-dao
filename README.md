@@ -11,7 +11,7 @@ Proposal to develop a Gnosis Safe module for Connext
 
 Body
 {
-  "address": ["",""],
+  "address": ["0x...","0x..."],
   "shares":[80,20]
 }
 
@@ -20,7 +20,7 @@ Create a transaction to send funds from Gnosis Safe to Enzyme Vault Manager depo
 ```
 1. TODO: check state of proposal 
 1. Superfluid daemon will pick up the proposal and create an IDA
-1. No funds will be send because there are no funds in the distribution address
+1. No funds will be sent because there are no funds in the distribution address
 1. At the end of the development phase, we will create a withdraw of enzyme proposal
 1. In this proposal we will create a transaction that withdraws and sends the increased amount to the Distribution Address
 
