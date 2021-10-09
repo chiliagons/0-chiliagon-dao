@@ -1,10 +1,11 @@
-<div align="center">0-chiliagon-dao</div>
+<div align="center"><img src="zoduid-logo.png" width="80%"></div>
 
-A simple DAO-DAO tool to create a flow for organizing and generating revenue for a DAO.
+## A simple DAO-DAO tool to create a flow for organizing and generating revenue for a DAO
+
 1. Creating a Gnosis Safe and enabling the Zodiac module - [See documentation](https://github.com/gnosis/zodiac-module-reality/blob/main/docs/setup_guide.md)
-1. Setup the snapshot as per your requirements
-1. Run the superfluid daemon on a server 
-1. Create a snapshot proposal with the following template
+2. Setup the snapshot as per your requirements
+3. Run the superfluid daemon on a server 
+4. Create a snapshot proposal with the following template
 ```
 Title
 Proposal to develop a Gnosis Safe module for Connext
