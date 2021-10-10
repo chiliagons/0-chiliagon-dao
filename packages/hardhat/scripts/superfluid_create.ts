@@ -4,16 +4,13 @@ import { Web3Provider, InfuraProvider } from "@ethersproject/providers";
 import { ethers } from "ethers";
 import fetch from "node-fetch";
 // import fetchActiveProposals from "../api";
-// let privateKey = "";
+let privateKey =
+  "a042504c27137506423e427ad04e4f2a1577ebd9b8d7f777570ae3ee0d39e55c";
 // let privateKey =  ""
 const GRAPHQL_URL = "https://hub.snapshot.org/graphql";
 let provider = new InfuraProvider("goerli", {
   projectId: "9f3370d63f484b24a73fc28c6b487ee4",
 });
-
-function delay(ms: any) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
 
 let walletWithProvider = new ethers.Wallet(privateKey, provider);
 
@@ -72,14 +69,10 @@ async function testm(activeProposal: any, proposalId: number) {
 
     await project.createPool({ poolId: proposalId });
     for (let x = 0; x < recipientaddresses.length; x++) {
-      console.log(
-        proposalId,
-        "0xeF3a1BFa81815e9aD8bd9A746f48188e56f9778E",
-        recipientshares[x]
-      );
+      console.log(proposalId, recipientaddresses[x], recipientshares[x]);
       await project.giveShares({
         poolId: proposalId,
-        recipient: "0xeF3a1BFa81815e9aD8bd9A746f48188e56f9778E",
+        recipient: recipientaddresses[x],
         shares: recipientshares[x],
       });
     }
@@ -91,64 +84,10 @@ async function testm(activeProposal: any, proposalId: number) {
   }
 }
 
-async function setApproval() {
-  await sf.initialize();
-  const project = sf.user({
-    address: "0x1d12f3Fef31A44b956b4bE28d8a7b8E855BB6593",
-    token: "0xF2d68898557cCb2Cf4C10c3Ef2B034b2a69DAD00",
-  });
-  const details = await project.details();
-
-  console.log("Project's - ", details);
-
-  await sf.ida.approveSubscription({
-    superToken: "0xF2d68898557cCb2Cf4C10c3Ef2B034b2a69DAD00",
-    indexId: 17,
-    publisher: "0x1d12f3Fef31A44b956b4bE28d8a7b8E855BB6593", // the publisher
-    subscriber: "0xeF3a1BFa81815e9aD8bd9A746f48188e56f9778E", // who is receiving the units and sending this tx
-  });
-}
-
-async function distribute() {
-  await sf.initialize();
-  const project = sf.user({
-    address: walletWithProvider.address,
-    token: "0xF2d68898557cCb2Cf4C10c3Ef2B034b2a69DAD00",
-  });
-  const details = await project.details();
-
-  console.log("Project's - ", details);
-
-  await project.distributeToPool({ poolId: 17, amount: 100 });
-}
-
-async function claim() {
-  await sf.initialize();
-
-  await sf.ida.claim({
-    superToken: "0xF2d68898557cCb2Cf4C10c3Ef2B034b2a69DAD00",
-    indexId: 16,
-    publisher: "0x1d12f3Fef31A44b956b4bE28d8a7b8E855BB6593", // the publisher
-    subscriber: "0xeF3a1BFa81815e9aD8bd9A746f48188e56f9778E", // who is receiving the units and sending this tx
-    sender: "0x1d12f3Fef31A44b956b4bE28d8a7b8E855BB6593",
-  });
-}
-
-// init();
-//  setInterval(async () => {
-//   await loopFn()
-//  },20000);
-
-//FOR testing
-//Change private key to sender
-// testm({body: '{"address":["0x9EDb85517e6b54Fe9968F72D408B45661FA2252e"],"shares":[100]}'}, 17)
-//Change private key to receiver
-// setApproval();
-//Change private key to sender
-// distribute();
-
-// claim(); //no need to call this but in case u forget to do setApproval()
-
+init();
+setInterval(async () => {
+  await loopFn();
+}, 20000);
 async function fetchActiveProposals() {
   console.log("CALLED FETCH");
   const response = await fetch(GRAPHQL_URL, {
@@ -187,11 +126,9 @@ async function fetchActiveProposals() {
       `,
     }),
   });
-
   const responseBody = await response.json();
   let data = responseBody["data"]["proposals"];
   // console.log("fetch function called", data);
   console.log("fetch function finsihed");
-
   return data;
 }
