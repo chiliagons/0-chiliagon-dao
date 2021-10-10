@@ -20,13 +20,6 @@ async function main() {
   // await hre.run('compile');
 
   // fs.unlinkSync(`${config.paths.artifacts}/contracts/contractAddress.ts`);
-  const Token = await ethers.getContractFactory("ERC20");
-  let weth = await Token.attach(WETHAddress);
-
-
-  const MTK = await ethers.getContractFactory('MTK');
-  const cMTK = await MTK.deploy();
-  await cMTK.deployed();
 
 
   // We get the contract to deploy
@@ -35,23 +28,10 @@ async function main() {
   await enzymeVaultManager.deployed();
   console.log('YourContract deployed to:', enzymeVaultManager.address);
 
-  // await delay(1000);
-  // let bal =  await cMTK.balanceOf("0xeF3a1BFa81815e9aD8bd9A746f48188e56f9778E")
-  // console.log(bal.toString())
+  //call getApproval for the two addresses 
+  await enzymeVaultManager.setApproval("0x3466c815247594dfd5b4b285f7a388081a5d5dc1", ethers.utils.parseEther("100000000000000"));
+  await enzymeVaultManager.setApproval("0xcea213a04ef0afd971465da200ae39d216f1fb9f",  ethers.utils.parseEther("100000000000000"));
   
-  // await cMTK.transfer(enzymeVaultManager.address, ethers.utils.parseUnits("1"))
-  // // await cMTK.approve(enzymeVaultManager.address, ethers.utils.parseUnits("1"))
-  // await enzymeVaultManager.setApproval("0x7BF0C0259DA2db1Cc9A484945722221c5B800139", ethers.utils.parseUnits("1"))
-  // let allowance =  await cMTK.allowance(enzymeVaultManager.address,"0x7BF0C0259DA2db1Cc9A484945722221c5B800139")
-  // console.log("allowance----",allowance.toString())
-  // console.log("Approval set")
-  // await cMTK.transferFrom(enzymeVaultManager.address,"0x7BF0C0259DA2db1Cc9A484945722221c5B800139", ethers.utils.parseUnits("0.01"))  
-  // let balcMTK =  await cMTK.balanceOf("0x7BF0C0259DA2db1Cc9A484945722221c5B800139")
-  // console.log(balcMTK.toString())
-  // await enzymeVaultManager.depositFunds(ethers.utils.parseUnits("0.0001"));
-
-  // // saveFrontendFiles(contract, "YourContract");
-  console.log('YourContract deployed to:', enzymeVaultManager.address);
   return {
     'enzymeVaultManager':enzymeVaultManager.address,
   };
