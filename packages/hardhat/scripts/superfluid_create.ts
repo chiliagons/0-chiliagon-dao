@@ -5,8 +5,7 @@ import { ethers } from "ethers";
 import fetch from "node-fetch";
 // import fetchActiveProposals from "../api";
 let privateKey =
-  "a042504c27137506423e427ad04e4f2a1577ebd9b8d7f777570ae3ee0d39e55c";
-// let privateKey =  ""
+  "";
 const GRAPHQL_URL = "https://hub.snapshot.org/graphql";
 let provider = new InfuraProvider("goerli", {
   projectId: "9f3370d63f484b24a73fc28c6b487ee4",
