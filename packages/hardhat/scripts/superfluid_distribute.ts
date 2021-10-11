@@ -3,7 +3,7 @@ const SuperfluidSDK = require("@superfluid-finance/js-sdk");
 import { Web3Provider, InfuraProvider } from "@ethersproject/providers";
 import { ethers } from "ethers";
 let privateKey =
-  "a042504c27137506423e427ad04e4f2a1577ebd9b8d7f777570ae3ee0d39e55c";
+  "";
 // let privateKey =  ""
 let provider = new InfuraProvider("goerli", {
   projectId: "9f3370d63f484b24a73fc28c6b487ee4",
